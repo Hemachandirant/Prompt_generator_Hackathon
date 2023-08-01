@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>ChatGPT Prompt Generator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 20px;
+        }
+        h1 {
+            margin-bottom: 20px;
+        }
+        form {
+            margin: 20px auto;
+            max-width: 500px;
+        }
+        label {
+            display: block;
+            margin-bottom: 10px;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+        #response {
+            margin-top: 20px;
+            border: 1px solid #ccc;
+            padding: 10px;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>ChatGPT Prompt Generator</h1>
+    <form onsubmit="generatePrompt(event)">
+        <label for="role">Enter a role:</label>
+        <input type="text" id="role" name="role" required>
+        <button type="submit">Generate Prompt</button>
+    </form>
+    <div id="response"></div>
+
+    <script>
+        function generatePrompt(event) {
+            event.preventDefault();
+
+            const roleInput = document.getElementById('role');
+            const responseDiv = document.getElementById('response');
+
+            const text = roleInput.value;
+
+            fetch("https://merve-chatgpt-prompt-generator.hf.space/run/predict", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    data: [text],
+                }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                const generatedPrompt = data.data[0];
+                responseDiv.innerHTML = `<p><strong>Generated Prompt:</strong> ${generatedPrompt}</p>`;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                responseDiv.innerHTML = '<p><strong>Error:</strong> Failed to generate prompt. Please try again later.</p>';
+            });
+        }
+    </script>
+</body>
+</html>
+
